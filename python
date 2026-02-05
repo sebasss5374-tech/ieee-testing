@@ -1,0 +1,69 @@
+import math
+import random
+
+def binarization(input_values):
+   
+    output_list = []
+    
+    for num in input_values:
+        tanh_value = math.tanh(num) #Assigns binary value to each float in input_values
+        #tanh_value = (1-(e_value**(-2*num)))/(1+(e_value**(-2*num)))
+        #sign_value = num/abs(num)
+        #sigmoid_value = 1/(1+(e_value**(-num)))
+        if tanh_value >= 0:
+            tanh_value = 1
+        else:
+            tanh_value = 0
+        
+        output_list.append(tanh_value)
+
+    #print("Input Numbers: ", input_values)
+    #print("Tanh Binarization: ", output_list)
+    return output_list
+
+def dot_product(input_bits, weight_bits): #Day 3 work, not used for final function
+    total = 0
+    for i in range(len(input_bits)):
+        total += input_bits[i] * weight_bits[i]
+   
+    return total
+
+def xnor_popcount(input_bits, weight_bits):
+    matches = 0
+    for i in range(len(input_bits)):
+        #Counts matches between input and weight bits
+        if input_bits[i] == weight_bits[i]:
+            matches += 1
+    return matches
+
+def xnor_dot(input_bits, weight_bits):
+    matches = xnor_popcount(input_bits, weight_bits)
+    total_bits = len(input_bits)
+    missmatches = total_bits - matches
+    return matches - missmatches
+
+def sign(x):
+    if x >= 0:
+        return 1
+    else:
+        return -1
+
+def inference(input_values, weight_values):
+    
+    input_bits = binarization(input_values)
+    dot = xnor_dot(input_bits, weight_values)
+    output = sign(dot)
+
+    return output
+
+nums = [random.uniform(-1, 1) for _ in range(784)] #random pixel values between -1 and 1
+weight = [random.choice([0, 1]) for i in range(784)] #random binary weights
+
+
+##with open("input.txt") as f: This allows reading from a file named input.txt instead of generating random numbers
+##    for line in f:
+##        nums.append(float(line.strip()))
+#binarization(nums)
+
+result = inference(nums, weight)
+print("Inference Output:", result)
